@@ -1,15 +1,21 @@
 import React,{ Component } from "react";
 import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBInput } from 'mdbreact';
-import Select from 'react-select'
-import countryList from 'react-select-country-list'
-import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector';
+import Axios from "axios";
+import { connect } from 'react-redux'
+
+import { loginUser } from '../../redux/actions/userAction'
+import { urlApi } from "../../helper/database";
 class Auth extends Component {
   constructor (props) {
     super(props);
     this.state = { 
-      country: '', 
-      region: '' ,
-      login:false
+      login:false,
+      username: '',
+      password: '',
+      email:'',
+      emailLogin: '',
+      passwordLogin:'',
+      confirmPass:''
     };
     
   }
@@ -21,7 +27,43 @@ class Auth extends Component {
     this.setState({ region: val });
   }
 
- 
+  //FUNCTION REGISTER
+ customerRegister = () => {
+   if(!this.state.username) {
+     alert('Input username')
+   } else if(!this.state.email) {
+     alert('Email salah')
+   }else if(!this.state.password){
+    alert('Isi Password !!!!')
+   }else if(this.state.confirmPass!=this.state.password){
+    alert('Password Tidak sama !!!!')
+   }
+   else{
+   Axios.post(urlApi + 'customer/customerRegister', { //DATA YANG KITA KIRIM KE BACKEND
+    nama: this.state.username,
+    email : this.state.email,
+    password : this.state.password,
+    role: 1
+   })
+   .then(() => {
+     alert('register sukses')
+   })
+   .catch((err) => {
+     alert('register gagal!')
+   })
+   }
+ }
+
+
+ loginUser = () => {
+   if(!this.state.emailLogin) {
+     alert('Masukkan username!')
+   } else if(!this.state.passwordLogin) {
+     alert('Masukkan password')
+   } else {
+     this.props.loginUser(this.state.emailLogin)
+   }
+ }
 
 render(){
   const { country, region } = this.state;
@@ -52,11 +94,12 @@ render(){
                   </h3>
                 </div>
                 <MDBInput
-                  label='Username'
+                  label='Email'
                   group
                   type='text'
-                  validate
+                  validate 
                   labelClass='white-text'
+                  onChange = {(e) => this.setState({ emailLogin: e.target.value })}
                 />
                 <MDBInput
                   label='Your password'
@@ -64,6 +107,7 @@ render(){
                   type='password'
                   validate
                   labelClass='white-text'
+                  onChange = {(e) => this.setState({ passwordLogin: e.target.value })}
                 />
                 <div className='md-form pb-3'>
                   <MDBInput
@@ -87,6 +131,7 @@ render(){
                       rounded
                       type='button'
                       className='btn-block z-depth-1'
+                      onClick={this.loginUser}
                     >
                       Sign In
                     </MDBBtn>
@@ -132,15 +177,16 @@ render(){
                   type='text'
                   validate
                   labelClass='white-text'
+                  onChange = {(e) => this.setState({ username: e.target.value })}
                 />
-                <MDBInput
+                {/* <MDBInput
                   label='Address'
                   group
                   type='text'
                   validate
                   labelClass='white-text'
-                />  
-                <div>
+                />   */}
+                {/* <div>
                   Country :
                 <CountryDropdown
                   value={country}
@@ -150,21 +196,22 @@ render(){
                   country={country}
                   value={region}
                   onChange={(val) => this.selectRegion(val)} />
-                </div>
+                </div> */}
                         
-                <MDBInput
+                {/* <MDBInput
                   label='Phone Number'
                   group
                   type='Number'
                   validate
                   labelClass='white-text'
-                />
+                /> */}
                 <MDBInput
                   label='Your email'
                   group
                   type='text'
                   validate
                   labelClass='white-text'
+                  onChange = {(e) => this.setState({ email: e.target.value })}
                 />
                 <MDBInput
                   label='Your password'
@@ -172,6 +219,15 @@ render(){
                   type='password'
                   validate
                   labelClass='white-text'
+                  onChange = {(e) => this.setState({ password: e.target.value })}
+                />
+                 <MDBInput
+                  label='Confirm Password'
+                  group
+                  type='password'
+                  validate
+                  labelClass='white-text'
+                  onChange = {(e) => this.setState({ confirmPass: e.target.value })}
                 />
                 <div className='md-form pb-3'>
                   <MDBInput
@@ -195,6 +251,7 @@ render(){
                       rounded
                       type='button'
                       className='btn-block z-depth-1'
+                      onClick={this.customerRegister}
                     >
                       Sign Up
                     </MDBBtn>
@@ -218,4 +275,4 @@ render(){
 }
 };
 
-export default Auth;
+export default connect(null, { loginUser })(Auth);

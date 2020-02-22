@@ -4,6 +4,7 @@ MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavLink, MDBNavbarToggle
 MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem
 } from "mdbreact";
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux'
 import Photo1 from '../../photo/logo.jpg'
 import './NavbarCss.css'
 
@@ -30,6 +31,9 @@ render() {
           <MDBNavbarNav left>
             <MDBNavItem>
               <MDBNavLink to='/auth'>Auth</MDBNavLink>
+            </MDBNavItem>
+            <MDBNavItem>
+              <p>{this.props.username}</p>
             </MDBNavItem>
             <MDBNavItem>
               <MDBDropdown>
@@ -60,4 +64,10 @@ render() {
   }
 }
 
-export default NavbarPage;
+const mapStateToProps = (state) => {
+  return {
+    username: state.user.username
+  }
+}
+
+export default connect(mapStateToProps, null)(NavbarPage);
