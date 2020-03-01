@@ -1,1 +1,1 @@
-export const urlApi='http://localhost:1999/'
+export const urlApi='https://diana-projek-api.herokuapp.com/' 
