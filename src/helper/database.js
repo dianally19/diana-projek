@@ -1,1 +1,1 @@
-export const urlApi='https://diana-api.netlify.com/' 
+export const urlApi='https://diana-projek-api.herokuapp.com/' 
